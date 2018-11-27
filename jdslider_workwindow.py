@@ -33,7 +33,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setHorizontalHeaderLabels(column_name)  # 设置列名称
 
     def insertItemData(self,itemData):
-        print("insertItemData  111")
+        print(itemData)
         """
         itemCount = self.tableWidget.rowCount
         self.tableWidget.insertRow(itemCount)
@@ -51,7 +51,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 def getItemData(self):
     jdInfoAll = DataFrame()
-    for i in range(1,4):
+    for i in range(1,2):
         url="https://list.jd.com/list.html?cat=9987,653,655&page="+str(i)
         res=requests.get(url, verify=False)
         res.encoding='utf-8'
@@ -80,10 +80,13 @@ def getItemData(self):
             thiscomment = re.compile(commentpat).findall(commentdata.text)
             comment = comment + thiscomment
 
-            self.tableWidget.insertRow(i)
+            #self.tableWidget.insertRow(i)
 
-            self.tableWidget.setItem( i , 0 , QTableWidgetItem('Hello'))
+            #self.tableWidget.setItem( i , 0 , QTableWidgetItem('Hello'))
 
+            self.update_date.emit(str(i))  # 发射信号
+
+            print(i)
             #self.tableWidget.setItem( i , 0 , new QTableWidgetItem(name))
             #self.tableWidget.setItem( i , 1 , new QTableWidgetItem(price))
             #self.tableWidget.setItem( i , 2 , new QTableWidgetItem(comment))
@@ -102,7 +105,9 @@ class UpdateData(QtCore.QThread):
     update_date = pyqtSignal(str)  # pyqt5 支持python3的str，没有Qstring
 
     def run(self):
-        #getItemData(self)
+        print(self)
+        getItemData(self)
+        """
         cnt = 0
         count = 10
         while cnt < count:
@@ -110,5 +115,6 @@ class UpdateData(QtCore.QThread):
             self.update_date.emit(str(cnt))  # 发射信号
             time.sleep(0.5)
             print(cnt)
+        """
 
     

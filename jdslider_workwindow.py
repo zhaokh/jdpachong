@@ -20,7 +20,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.pushButton.clicked.connect(self.onGetClicked)
 
-        self.tableWidget.setRowCount(4)
         self.tableWidget.setColumnCount(3)
 
         column_name = [
@@ -33,14 +32,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setHorizontalHeaderLabels(column_name)  # 设置列名称
 
     def insertItemData(self,itemData):
+
+        itemCount = self.tableWidget.rowCount()
+        print(itemCount)
+        self.tableWidget.insertRow(itemCount);
         print(itemData)
-        """
-        itemCount = self.tableWidget.rowCount
-        self.tableWidget.insertRow(itemCount)
-        self.tableWidget.setItem(itemCount,0,"111")
-        self.tableWidget.setItem(itemCount,1,"222")
-        self.tableWidget.setItem(itemCount,2,"333")       
-        """
+        self.tableWidget.setItem(itemCount,0,QTableWidgetItem(itemData[0]))
+        self.tableWidget.setItem(itemCount,1,QTableWidgetItem(itemData[1]))
+        self.tableWidget.setItem(itemCount,2,QTableWidgetItem(itemData[2]))       
+
 
     def onGetClicked(self):
         print("开启爬虫")
@@ -84,7 +84,8 @@ def getItemData(self):
 
             #self.tableWidget.setItem( i , 0 , QTableWidgetItem('Hello'))
 
-            self.update_date.emit(str(i))  # 发射信号
+            self.update_date.emit(["name","price","comment"])  # 发射信号
+            #self.update_date.emit([name,price,comment])  # 发射信号
 
             print(i)
             #self.tableWidget.setItem( i , 0 , new QTableWidgetItem(name))
@@ -102,7 +103,7 @@ def getItemData(self):
 
 class UpdateData(QtCore.QThread):
     """更新数据类"""
-    update_date = pyqtSignal(str)  # pyqt5 支持python3的str，没有Qstring
+    update_date = pyqtSignal(list)  # pyqt5 支持python3的str，没有Qstring
 
     def run(self):
         print(self)

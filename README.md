@@ -11,3 +11,7 @@ py3 使用requrest处理rul  运行pip install requests，按装requests库
 
 动态加载的网站 强大的抓包工具就是Fiddler：
 URL：http://www.telerik.com/fiddler  // 公司外网访问，直接报自由门，关掉网络，真是诡异
+
+
+v 0.2 抓取小说 章节标题 章节内容
+

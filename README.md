@@ -10,4 +10,10 @@ py3 使用requrest处理rul  运行pip install requests，按装requests库
 爬虫教程 https://blog.csdn.net/u012662731/article/details/78537432
 
 动态加载的网站 强大的抓包工具就是Fiddler：
-URL：http://www.telerik.com/fiddler
+
+URL：http://www.telerik.com/fiddler  // 公司外网访问，直接报自由门，关掉网络，真是诡异
+
+
+v 0.2 抓取小说 章节标题 章节内容
+
+v 1.0 整部小说下载，按章节，不可用的直接跳过

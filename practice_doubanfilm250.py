@@ -1,5 +1,6 @@
 import requests,sys
 from bs4 import BeautifulSoup
+from requests.packages import urllib3
 
 DOWNLOAD_URL = 'http://movie.douban.com/top250'
 
@@ -8,7 +9,7 @@ def download_page(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36'
     }
-    data = requests.get(url,headers = headers).content
+    data = requests.get(url,headers = headers, verify=False).content
     return data
 
 def parse_html(html):
@@ -38,4 +39,5 @@ def main():
 
 
 if __name__ == '__main__':
+    urllib3.disable_warnings()
     main()

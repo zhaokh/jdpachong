@@ -19,3 +19,14 @@ v 0.2 抓取小说 章节标题 章节内容
 v 1.0 整部小说下载，按章节，不可用的直接跳过
 
 v 1.1 抓取豆瓣250部https，抓取图片自动并创建pic目录存储
+
+安装 Anaconda, python的包管理器，通过它可以安装Scrapy，一个python的网络爬虫框架
+然后运行conda install -c conda-forge scrapy来安装scrapy scrayp官方教程https://doc.scrapy.org/en/latest/intro/install.html
+conda install -c conda-forge scrapy 安装scrapyr
+运行 aconda navigator 会初始化环境安装若干依赖包
+
+
+python三大神器：pip virtualenv fabric
+ pip  --  python 包管理工具
+ virtualenv --  创建虚拟python环境避免冲突
+ fabric  --  基于ssh的部署工具包

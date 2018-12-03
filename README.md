@@ -40,3 +40,7 @@ python三大神器：pip virtualenv fabric
  pip install lxml
  pip install pandas
  pip install xlwt
+
+通过 Qt designer来进行界面设计，位于
+ C:\Users\hua rd\AppData\Local\Programs\Python\Python37\Lib\site-packages\pyqt5_tools
+设计完成后保存到vsCode路径中，然后vscode安装PYQT integration，然后选择重新加载，然后右键选择 compile，即可生成对应的py文件，通过startUp.py来启动

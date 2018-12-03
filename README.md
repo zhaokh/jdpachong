@@ -11,7 +11,7 @@ py3 使用requrest处理rul  运行pip install requests，按装requests库
 
 动态加载的网站 强大的抓包工具就是Fiddler：
 
-URL：http://www.telerik.com/fiddler  // 公司外网访问，直接报自由门，关掉网络，真是诡异
+URL：http://www.telerik.com/fiddler  // 公司外网访问，直接报自由门，导致网络，真是诡异
 
 
 v 0.2 抓取小说 章节标题 章节内容
@@ -30,3 +30,5 @@ python三大神器：pip virtualenv fabric
  pip  --  python 包管理工具
  virtualenv --  创建虚拟python环境避免冲突
  fabric  --  基于ssh的部署工具包
+
+ 从远程分支（origin/master）提取到当前新建的分支  git checkout -b tmp origin/master

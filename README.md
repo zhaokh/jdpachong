@@ -32,3 +32,11 @@ python三大神器：pip virtualenv fabric
  fabric  --  基于ssh的部署工具包
 
  从远程分支（origin/master）提取到当前新建的分支  git checkout -b tmp origin/master
+
+ 添加 practice_jd, 爬京东手机图片
+
+ 运行 practice_jd.py
+ 需要先安装以下库： 
+ pip install lxml
+ pip install pandas
+ pip install xlwt

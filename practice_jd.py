@@ -1,29 +1,45 @@
+#京东手机信息采集：名称、价格、评论数、商家名称等
 import requests
-url="https://img13.360buyimg.com/n7/jfs/t3391/79/1963324994/297093/187de6d4/583ced0fN27e50577.jpg"
-res=requests.get(url=url, verify=False)
-
-with open("jd1.jpg","wb") as fd:
-    fd.write(res.content)
-
 import re
-url="https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_5089253"
-res=requests.get(url, verify=False)
-print(res.text)
-pat='"p":"(.*?)"}'
-price=re.compile(pat).findall(res.text)
-print(price)
+from lxml import etree
+from pandas import DataFrame
+import pandas as pd
 
-url="https://list.jd.com/list.html?cat=9987,653,655"
-res=requests.get(url, verify=False)
-imagepat='<img width="220" height="220" data-img="1" data-lazy-img="//(.*?)">'
-imagelist=re.compile(imagepat).findall(res.text)
-print(imagelist)
+jdInfoAll=DataFrame()
+for i in range(1,4):
+    url="https://list.jd.com/list.html?cat=9987,653,655&page="+str(i)
+    res=requests.get(url, verify=False)
+    res.encoding='utf-8'
+    root=etree.HTML(res.text)
+    name=root.xpath('//li[@class="gl-item"]//div[@class="p-name"]/a/em/text()')
+    for i in range(0,len(name)):
+        name[i]=re.sub('\s','',name[i])
 
-x=1
-for imageurl in imagelist:
-    imagename="jdpic\\"+str(x)+".jpg"
-    x+=1
-    imageurl="http://"+imageurl
-    res=requests.get(imageurl, verify=False)
-    with open(imagename,'wb') as fd:
-        fd.write(res.content)
+    #sku
+    sku=root.xpath('//li[@class="gl-item"]/div/@data-sku')
+
+    #价格
+    price=[]
+    comment=[]
+    for i in range(0,len(sku)):
+        thissku=sku[i]
+        priceurl="https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_"+str(thissku)
+        pricedata=requests.get(priceurl, verify=False)
+        pricepat='"p":"(.*?)"}'
+        thisprice=re.compile(pricepat).findall(pricedata.text)   
+        price=price+thisprice
+
+        commenturl="https://club.jd.com/comment/productCommentSummaries.action?my=pinglun&referenceIds="+str(thissku)
+        commentdata=requests.get(commenturl)
+        commentpat='"CommentCount":(.*?),"'
+        thiscomment=re.compile(commentpat).findall(commentdata.text)
+        comment=comment+thiscomment
+
+    #商家名称
+    shopname=root.xpath('//li[@class="gl-item"]//div[@class="p-shop"]/@data-shop_name')
+    print(shopname)
+
+    jdInfo=DataFrame([name,price,shopname,comment]).T
+    jdInfo.columns=['产品名称','价格','商家名称','评论数']
+    jdInfoAll=pd.concat([jdInfoAll,jdInfo])
+jdInfoAll.to_excel('jdInfoAll.xls')

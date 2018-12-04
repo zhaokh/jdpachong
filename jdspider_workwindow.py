@@ -17,10 +17,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
-        self.comboBox.addItems(["大家电","厨房家电"])
+        self.smallnames, self.urls = initsmallCatelog(self)
 
-        self.comboBox_2.addItems(["电视机","冰箱"])
-        
+        self.comboBox.addItems(["大家电"])
+
+        self.comboBox_2.addItems(self.smallnames)
+    
         self.pushButton.clicked.connect(self.onGetClicked)
 
         column_name = [
@@ -43,12 +45,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def onGetClicked(self):
         print("开启爬虫")
+        currentIndex = self.comboBox_2. currentIndex() + 1
+        for itm in self.smallnames:
+            indexx = 0
+            print(itm + " : " + self.urls[indexx])
+            indexx = indexx + 1
+        print(currentIndex)
+        print(self.urls[currentIndex])
         self.update_data_thread = UpdateData()
         self.update_data_thread.update_date.connect(self.insertItemData)  # 链接信号
         self.update_data_thread.start()
 
 
+def initsmallCatelog(self):
+    url = "https://list.jd.com/list.html?cat=737,794,13701"
+    res=requests.get(url, verify=False)
+    res.encoding='utf-8'
+    root=etree.HTML(res.text)
+
+    names = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/text()')
+    urls = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/@href')
+    return names,urls
+
 def getItemData(self):
+    print(self.urls)
+    return
     jdInfoAll = DataFrame()
     for i in range(1,4):
         url="https://list.jd.com/list.html?cat=9987,653,655&page="+str(i)
@@ -103,7 +124,10 @@ class UpdateData(QtCore.QThread):
     update_date = pyqtSignal(list)  # pyqt5 支持python3的str，没有Qstring
 
     def run(self):
+        #print(self.parent().urls)
+        pass
         getItemData(self)
+
         """
         cnt = 0
         count = 10

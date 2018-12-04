@@ -8,6 +8,9 @@ from pandas import DataFrame
 import pandas as pd
 from Ui_jdjiadianui import Ui_MainWindow
 from PyQt5.QtCore import QObject, pyqtSignal
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -20,26 +23,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.pushButton.clicked.connect(self.onGetClicked)
 
-        self.tableWidget.setColumnCount(3)
-
         column_name = [
-            'ETH/BIC',
-            'column1',
-            'column2',
-            'column3',
-            'column4',
+            '手机名称',
+            '价格',
+            '商家名称',
+            '评论数'
         ]
+
+        self.tableWidget.setColumnCount(len(column_name))
+
         self.tableWidget.setHorizontalHeaderLabels(column_name)  # 设置列名称
 
     def insertItemData(self,itemData):
-
         itemCount = self.tableWidget.rowCount()
-        print(itemCount)
         self.tableWidget.insertRow(itemCount);
-        print(itemData)
-        self.tableWidget.setItem(itemCount,0,QTableWidgetItem(itemData[0]))
-        self.tableWidget.setItem(itemCount,1,QTableWidgetItem(itemData[1]))
-        self.tableWidget.setItem(itemCount,2,QTableWidgetItem(itemData[2]))       
+        for i in range(0, len(itemData)):
+            self.tableWidget.setItem(itemCount,i,QTableWidgetItem(itemData[i]))             
 
 
     def onGetClicked(self):
@@ -51,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 def getItemData(self):
     jdInfoAll = DataFrame()
-    for i in range(1,2):
+    for i in range(1,4):
         url="https://list.jd.com/list.html?cat=9987,653,655&page="+str(i)
         res=requests.get(url, verify=False)
         res.encoding='utf-8'
@@ -59,7 +58,10 @@ def getItemData(self):
         name=root.xpath('//li[@class="gl-item"]//div[@class="p-name"]/a/em/text()')
         for i in range(0,len(name)):
             name[i]=re.sub('\s','',name[i])
-
+        #商家名称
+        shopname=root.xpath('//li[@class="gl-item"]//div[@class="p-shop"]/@data-shop_name')
+        for i in range(0,len(shopname)):
+            shopname[i]=re.sub('\s','',shopname[i])
         #sku
         sku=root.xpath('//li[@class="gl-item"]/div/@data-sku')
 
@@ -84,18 +86,13 @@ def getItemData(self):
 
             #self.tableWidget.setItem( i , 0 , QTableWidgetItem('Hello'))
 
-            self.update_date.emit(["name","price","comment"])  # 发射信号
+            self.update_date.emit([name[i],thisprice[0],shopname[i],thiscomment[0]])  # 发射信号
             #self.update_date.emit([name,price,comment])  # 发射信号
-
-            print(i)
             #self.tableWidget.setItem( i , 0 , new QTableWidgetItem(name))
             #self.tableWidget.setItem( i , 1 , new QTableWidgetItem(price))
             #self.tableWidget.setItem( i , 2 , new QTableWidgetItem(comment))
             #self.tableWidget.
 
-        #商家名称
-        shopname=root.xpath('//li[@class="gl-item"]//div[@class="p-shop"]/@data-shop_name')
-        print(shopname)
 
         jdInfo = DataFrame([name,price,shopname,comment]).T
         jdInfo.columns=['产品名称','价格','商家名称','评论数']
@@ -106,7 +103,6 @@ class UpdateData(QtCore.QThread):
     update_date = pyqtSignal(list)  # pyqt5 支持python3的str，没有Qstring
 
     def run(self):
-        print(self)
         getItemData(self)
         """
         cnt = 0

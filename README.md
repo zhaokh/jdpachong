@@ -40,3 +40,13 @@ python三大神器：pip virtualenv fabric
  pip install lxml
  pip install pandas
  pip install xlwt
+
+运行
+pip.exe install --pre pyqt5-tools~=5.11  安装prqt5-tools，其中--pre为制定安装最新版本，pyqt5-tools后面为制定版本
+pin install QyQt5  // 安装 pyqt5
+安装之后，才有pyqt5-tools文件夹，下面会有designer.exe工具，进行界面化设计
+
+
+通过 Qt designer来进行界面设计，位于
+ C:\Users\hua rd\AppData\Local\Programs\Python\Python37\Lib\site-packages\pyqt5_tools
+设计完成后保存到vsCode路径中，然后vscode安装PYQT integration，然后选择重新加载，然后右键选择 compile，即可生成对应的py文件，通过startUp.py来启动

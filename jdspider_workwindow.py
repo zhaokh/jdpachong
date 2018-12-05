@@ -65,6 +65,8 @@ def initsmallCatelog(self):
     res.encoding='utf-8'
     root=etree.HTML(res.text)
 
+
+
     names = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/text()')
     urls = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/@href')
     itemurldic = dict(zip(names,urls))
@@ -78,7 +80,21 @@ def getItemData(self):
         res=requests.get(url, verify=False)
         res.encoding='utf-8'
         root=etree.HTML(res.text)
-        name=root.xpath('//li[@class="gl-item"]//div[@class="p-name"]/a/em/text()')
+        items=root.xpath('//li[@class="gl-item"]')
+        for item in items:
+            name = item.xpath('.//div[@class="p-name"]/a/em/text()')
+            name = re.sub('\s','',name)
+            print(name)
+            sku=root.xpath('./div/@data-sku')
+            priceurl="https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_"+str(sku)
+            pricedata=requests.get(priceurl, verify=False)
+            pricepat='"p":"(.*?)"}'
+            price = re.compile(pricepat).findall(pricedata.text)
+            print(price)
+
+            
+
+        break
 
         for i in range(0,len(name)):
             name[i]=re.sub('\s','',name[i])

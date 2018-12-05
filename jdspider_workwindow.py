@@ -65,8 +65,6 @@ def initsmallCatelog(self):
     res.encoding='utf-8'
     root=etree.HTML(res.text)
 
-
-
     names = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/text()')
     urls = root.xpath('/html/body//div[@class="crumbs-nav-item"][last()]//ul[@class="menu-drop-list"]/li/a/@href')
     itemurldic = dict(zip(names,urls))
@@ -81,69 +79,31 @@ def getItemData(self):
         res.encoding='utf-8'
         root=etree.HTML(res.text)
         items=root.xpath('//li[@class="gl-item"]')
+        priceurl_base = "https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_"
+        commenturl_base = "https://club.jd.com/comment/productCommentSummaries.action?my=pinglun&referenceIds="
+
         for item in items:
             name = item.xpath('.//div[@class="p-name"]/a/em/text()')
-            name = re.sub('\s','',name)
-            print(name)
-            sku=root.xpath('./div/@data-sku')
-            priceurl="https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_"+str(sku)
+            name = name[0]
+            name = re.sub('\s','',str(name))
+            sku=item.xpath('./div/@data-sku')
+            sku = sku[0]
+            priceurl = priceurl_base + str(sku)
             pricedata=requests.get(priceurl, verify=False)
             pricepat='"p":"(.*?)"}'
             price = re.compile(pricepat).findall(pricedata.text)
-            print(price)
+            price = price[0]
+           
 
-            
-
-        break
-
-        for i in range(0,len(name)):
-            name[i]=re.sub('\s','',name[i])
-        
-        shopnames = ['//li[@class="gl-item"]//div[@class="p-shop"]//a/text()','//li[@class="gl-item"]//div[@class="p-shop"]/@data-shop_name']
-        #商家名称
-        for shopname in shopnames:
-            shopname = root.xpath(shopname)
-            if len(shopname) > 0 :
-                break
-
-        if len(shopname) == 0:
-            print("无法获取 商家名称")  #商家信息动态加载的, 设置成 “”
-
-        #sku
-        sku=root.xpath('//li[@class="gl-item"]/div/@data-sku')
-
-        #价格
-        price=[]
-        comment=[]
-        for i in range(0,len(sku)):
-            thissku=sku[i]
-            priceurl="https://p.3.cn/prices/mgets?callback=jQuery6775278&skuids=J_"+str(thissku)
-            pricedata=requests.get(priceurl, verify=False)
-            pricepat='"p":"(.*?)"}'
-            thisprice=re.compile(pricepat).findall(pricedata.text)   
-            price=price+thisprice
-
-            commenturl = "https://club.jd.com/comment/productCommentSummaries.action?my=pinglun&referenceIds="+str(thissku)
-            commentdata = requests.get(commenturl)
+            commenturl = commenturl_base + str(sku)
+            commentdata = requests.get(commenturl, verify=False)
             commentpat = '"CommentCount":(.*?),"'
-            thiscomment = re.compile(commentpat).findall(commentdata.text)
-            comment = comment + thiscomment
-
-            #self.tableWidget.insertRow(i)
-
-            #self.tableWidget.setItem( i , 0 , QTableWidgetItem('Hello'))
-
-            self.update_date.emit([name[i],thisprice[0],"xxx",thiscomment[0]])  # 发射信号
-            #self.update_date.emit([name,price,comment])  # 发射信号
-            #self.tableWidget.setItem( i , 0 , new QTableWidgetItem(name))
-            #self.tableWidget.setItem( i , 1 , new QTableWidgetItem(price))
-            #self.tableWidget.setItem( i , 2 , new QTableWidgetItem(comment))
-            #self.tableWidget.
-
-
-    #    jdInfo = DataFrame([name,price,shopname,comment]).T
-    #    jdInfo.columns=['产品名称','价格','商家名称','评论数']
-    #jdInfoAll = pd.concat([jdInfoAll,jdInfo]) 
+            comment = re.compile(commentpat).findall(commentdata.text)
+            comment = comment[0]           
+            self.update_date.emit([name,price,"xxx",comment])  # 发射信号
+        pass
+    pass
+pass
 
 class UpdateData(QtCore.QThread):
     """更新数据类"""

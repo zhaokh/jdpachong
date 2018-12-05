@@ -21,7 +21,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.comboBox.addItems(["大家电"])
 
-
         self.comboBox_2.addItems(self.smallnames)
     
         self.pushButton.clicked.connect(self.onGetClicked)

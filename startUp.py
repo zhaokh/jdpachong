@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from jdslider_workwindow import MainWindow
+from jdspider_workwindow import MainWindow
 import sys
 
 if __name__ == "__main__":
